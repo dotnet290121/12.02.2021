@@ -73,3 +73,7 @@ select id, class_id, student_id, grade,
        count(*) over (partition by class_id) total_in_class,
        row_number() over (partition by class_id order by grade desc) rank_in_class
        from grades2 ) c
+       
+-- display min grade in each row
+-- display diff between current grade and min grade in each row
+-- how many students passed the average grade? [new query]
