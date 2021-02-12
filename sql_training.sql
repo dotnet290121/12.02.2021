@@ -64,3 +64,12 @@ select count(*) from
        from players ) c
     where c.row_num   = 2;
 
+select class_id, avg(grade), count(student_id) from grades2
+group by class_id;
+
+select *, (grade - class_avg) diff_avg from (
+select id, class_id, student_id, grade,
+       avg(grade) over (partition by class_id) class_avg,
+       count(*) over (partition by class_id) total_in_class,
+       row_number() over (partition by class_id order by grade desc) rank_in_class
+       from grades2 ) c
