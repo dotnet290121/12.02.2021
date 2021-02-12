@@ -77,3 +77,81 @@ select id, class_id, student_id, grade,
 -- display min grade in each row
 -- display diff between current grade and min grade in each row
 -- how many students passed the average grade? [new query]
+
+create table routes
+(
+    id       bigserial not null
+        constraint routes_pk
+            primary key,
+    train_id bigint    not null
+        constraint routes_trains_id_fk
+            references trains,
+    route_id bigint    not null,
+    date     date      not null
+);
+
+create table trains
+(
+    id                  bigserial         not null
+        constraint trains_pk
+            primary key,
+    model               varchar           not null,
+    max_speed           integer default 0 not null,
+    first_class_places  integer default 0 not null,
+    second_class_places integer default 0 not null
+);
+
+insert into trains(model, max_speed, first_class_places, second_class_places)
+values ('InterCity 100', 160, 30, 230);
+insert into trains(model, max_speed, first_class_places, second_class_places)
+values ('InterCity 100', 160, 40, 210);
+insert into trains(model, max_speed, first_class_places, second_class_places)
+values ('InterCity 125', 200, 40, 180);
+insert into trains(model, max_speed, first_class_places, second_class_places)
+values ('Pendolino 390', 224, 45, 150);
+insert into trains(model, max_speed, first_class_places, second_class_places)
+values ('Pendolino ETR310', 224, 50, 250);
+insert into trains(model, max_speed, first_class_places, second_class_places)
+values ('Pendolino 390', 224, 60, 250);
+
+select * from trains;
+update trains
+set max_speed = 225
+where max_speed = 224;
+
+insert into routes(train_id, route_id, date)
+values (1, 1, '2021-02-11');
+insert into routes(train_id, route_id, date)
+values (1, 2, '2021-02-11');
+insert into routes(train_id, route_id, date)
+values (1, 3, '2021-02-11');
+insert into routes(train_id, route_id, date)
+values (1, 4, '2021-02-11');
+insert into routes(train_id, route_id, date)
+values (2, 2, '2021-02-11');
+insert into routes(train_id, route_id, date)
+values (2, 3, '2021-02-11');
+insert into routes(train_id, route_id, date)
+values (2, 4, '2021-02-11');
+insert into routes(train_id, route_id, date)
+values (2, 5, '2021-02-11');
+insert into routes(train_id, route_id, date)
+values (3, 3, '2021-02-11');
+insert into routes(train_id, route_id, date)
+values (3, 5, '2021-02-11');
+values (4, 2, '2021-02-11');
+insert into routes(train_id, route_id, date)
+values (4, 4, '2021-02-11');
+insert into routes(train_id, route_id, date)
+values (4, 6, '2021-02-11');
+insert into routes(train_id, route_id, date)
+values (4, 7, '2021-02-11');
+
+select *,
+       count(*) over (partition by route_id order by route_id) total_on_same_route,
+       max(max_speed) over (partition by route_id  order by route_id) max_speed_in_route
+       from routes
+join trains t on routes.train_id = t.id
+order by route_id;
+
+
